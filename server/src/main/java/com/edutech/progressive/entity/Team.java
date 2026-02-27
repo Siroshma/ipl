@@ -1,6 +1,14 @@
 package com.edutech.progressive.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Team implements Comparable<Team>{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int teamId;
     private String teamName;
     private String location;
@@ -49,7 +57,5 @@ public class Team implements Comparable<Team>{
     public int compareTo(Team o) {
         return this.getTeamName().compareTo(o.getTeamName());
     }
-
-    
 
 }
