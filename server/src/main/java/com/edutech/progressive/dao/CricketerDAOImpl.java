@@ -1,5 +1,5 @@
 package com.edutech.progressive.dao;
- 
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,21 +7,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
- 
+
 import com.edutech.progressive.config.DatabaseConnectionManager;
 import com.edutech.progressive.entity.Cricketer;
- 
+
 public class CricketerDAOImpl implements CricketerDAO{
    Connection conn;
     public CricketerDAOImpl() {
       conn=DatabaseConnectionManager.getConnection();
    }
- 
+
     @Override
     public int addCricketer(Cricketer cricketer)throws SQLException {
       String q="insert into cricketer (team_id, cricketer_name,age,nationality,experience,role,total_runs,total_wickets) values (?,?,?,?,?,?,?,?)";
       PreparedStatement ps=conn.prepareStatement(q,Statement.RETURN_GENERATED_KEYS);
-ps.setInt(1, cricketer.getTeamId());
+     
+ ps.setInt(1, cricketer.getTeamId());
             ps.setString(2, cricketer.getCricketerName());
             ps.setInt(3, cricketer.getAge());
             ps.setString(4, cricketer.getNationality());
@@ -29,7 +30,7 @@ ps.setInt(1, cricketer.getTeamId());
             ps.setString(6, cricketer.getRole());
             ps.setInt(7, cricketer.getTotalRuns());
             ps.setInt(8, cricketer.getTotalWickets());
- 
+
       ps.executeUpdate();
       ResultSet rs=ps.getGeneratedKeys();
       if(rs.next())
@@ -38,9 +39,9 @@ ps.setInt(1, cricketer.getTeamId());
        return i;
       }
       return -1;
- 
+
     }
- 
+
     @Override
     public Cricketer getCricketerById(int cricketerId)throws SQLException {
       String q="select * from cricketer where cricketer_id=?";
@@ -54,11 +55,11 @@ ps.setInt(1, cricketer.getTeamId());
       }
      return null;
     }
- 
+
     @Override
     public void updateCricketer(Cricketer cricketer)throws SQLException{
      String q="UPDATE cricketer SET team_id = ?, cricketer_name = ?, age = ?, nationality = ?, experience = ?, role = ?, total_runs = ?, total_wickets = ? WHERE cricketer_id = ?";
-try (PreparedStatement ps = conn.prepareStatement(q)) {
+ try (PreparedStatement ps = conn.prepareStatement(q)) {
             ps.setInt(1, cricketer.getTeamId());
             ps.setString(2, cricketer.getCricketerName());
             ps.setInt(3, cricketer.getAge());
@@ -69,10 +70,10 @@ try (PreparedStatement ps = conn.prepareStatement(q)) {
             ps.setInt(8, cricketer.getTotalWickets());
             ps.setInt(9, cricketer.getCricketerId());
             ps.executeUpdate();
- 
-}
+
+ }
     }
- 
+
     @Override
     public void deleteCricketer(int cricketerId)throws SQLException {
   final String sql = "DELETE FROM cricketer WHERE cricketer_id = ?";
@@ -81,11 +82,12 @@ try (PreparedStatement ps = conn.prepareStatement(q)) {
             ps.executeUpdate();
         }   
     }
- 
+
     @Override
     public List<Cricketer> getAllCricketers() throws SQLException {
+      
 String sql = "SELECT * FROM cricketer";
- 
+
         List<Cricketer> list = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql))
         {
@@ -97,6 +99,7 @@ String sql = "SELECT * FROM cricketer";
          }
          return list;
         }
+    
     }
- 
+
 }

@@ -8,4 +8,8 @@ import com.edutech.progressive.entity.Team;
 public interface TeamRepository extends JpaRepository <Team,Integer> {
     @Query("select t from Team t where t.teamId=:teamId")
     Team findByTeamId(@Param("teamId") int teamId);
+    
+@Query("select t from Team t where t.teamName = :name")
+    Team findByTeamName(@Param("name") String name);
+
 }
