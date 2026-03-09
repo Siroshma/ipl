@@ -1,19 +1,36 @@
 package com.edutech.progressive.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
+
 public class Team implements Comparable<Team>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int teamId;
+     private int teamId;
     private String teamName;
     private String location;
     private String ownerName;
     private int establishmentYear;
+  
+@OneToMany(mappedBy = "team")
+    private List<Cricketer> cricketers;
+
+    // One team → many matches as first team
+    @OneToMany(mappedBy = "firstTeam")
+    private List<Match> matchesAsFirstTeam;
+   
+@OneToMany(mappedBy = "secondTeam")
+    private List<Match> matchesAsSecondTeam;
+
+
+
     public Team() {
     }
     public Team(int teamId, String teamName, String location, String ownerName, int establishmentYear) {
@@ -55,7 +72,8 @@ public class Team implements Comparable<Team>{
     }
     @Override
     public int compareTo(Team o) {
-        return this.getTeamName().compareTo(o.getTeamName());
+     return this.getTeamName().compareTo(o.getTeamName());
     }
+    
 
 }
