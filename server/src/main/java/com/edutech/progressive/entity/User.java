@@ -17,8 +17,8 @@ public class User {
     private String role;
     public User() {
     }
-    public User(int userId, String fullName, String username, String password, String email, String role) {
-        this.userId = userId;
+    public User(String fullName, String username, String password, String email, String role) {
+       
         this.fullName = fullName;
         this.username = username;
         this.password = password;
@@ -61,7 +61,7 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
     
+
 
 }
