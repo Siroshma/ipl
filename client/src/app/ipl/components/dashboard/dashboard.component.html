@@ -1,61 +1,109 @@
 <app-navbar></app-navbar>
-
 <div class="container">
-  <h2>teams</h2>
+  <h2>Teams</h2>
   <table class="table">
     <thead>
       <tr>
-        <th>id</th>
-        <th>name</th>
-        <th>location</th>
-        <th>owner</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Owner</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngfor="let team of teams">
-        <td>{{ team.teamid }}</td>
-        <td>{{ team.teamname }}</td>
+      <tr *ngFor="let team of teams">
+        <td>{{ team.teamId }}</td>
+        <td>{{ team.teamName }}</td>
         <td>{{ team.location }}</td>
-        <td>{{ team.ownername }}</td>
+        <td>{{ team.ownerName }}</td>
       </tr>
     </tbody>
   </table>
 
-  <h2>cricketers</h2>
+  <h2>Cricketers</h2>
   <table class="table">
     <thead>
       <tr>
-        <th>id</th>
-        <th>name</th>
-        <th>age</th>
-        <th>team</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Team</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngfor="let cricketer of cricketers">
-        <td>{{ cricketer.cricketerid }}</td>
-        <td>{{ cricketer.cricketername }}</td>
+      <tr *ngFor="let cricketer of cricketers">
+        <td>{{ cricketer.cricketerId }}</td>
+        <td>{{ cricketer.cricketerName }}</td>
         <td>{{ cricketer.age }}</td>
-        <td>{{ cricketer.team.teamname }}</td>
+        <td>{{ cricketer.team.teamName }}</td>
       </tr>
     </tbody>
   </table>
 
-  <h2>matches</h2>
+  <h2>Matches</h2>
   <table class="table">
     <thead>
       <tr>
-        <th>id</th>
-        <th>date</th>
-        <th>venue</th>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Venue</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngfor="let match of matches">
-        <td>{{ match.matchid }}</td>
-        <td>{{ match.matchdate | date }}</td>
+      <tr *ngFor="let match of matches">
+        <td>{{ match.matchId }}</td>
+        <td>{{ match.matchDate | date }}</td>
         <td>{{ match.venue }}</td>
       </tr>
     </tbody>
   </table>
+
+  <h2>Votes</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Vote</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let vote of voteList">
+        <td>{{ vote.category }}</td>
+        <td>{{ vote.cricketer !== null ? vote.cricketer.cricketerName : vote.team.teamName }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="voteList.length === 0" class="empty-list">No tickets to display</div>
+
+  <!-- Display Tickets Booked -->
+  <div *ngIf="role === 'USER'">
+    <form [formGroup]="emailForm" (ngSubmit)="onSubmitEmail()" class="email-form-container">
+      <div>
+        <label for="email">Email:</label>
+        <input id="email" type="email" formControlName="email" placeholder="Enter email" required />
+      </div>
+      <button type="submit" [disabled]="emailForm.invalid">Search Tickets</button>
+    </form>
+
+    <h2>Tickets Booked</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Match</th>
+          <th>Match Date</th>
+          <th>No. of Tickets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of ticketsBooked">
+          <td>{{ ticket.bookingId }}</td>
+          <td>{{ ticket.match.firstTeam.teamName }} vs {{ ticket.match.secondTeam.teamName }}</td>
+          <td>{{ ticket.match.matchDate | date }}</td>
+          <td>{{ ticket.numberOfTickets }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="ticketsBooked.length === 0" class="empty-list">No tickets to display</div>
+  </div>
 </div>
