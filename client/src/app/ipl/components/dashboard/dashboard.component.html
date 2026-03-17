@@ -1,0 +1,61 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+  <h2>teams</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>location</th>
+        <th>owner</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngfor="let team of teams">
+        <td>{{ team.teamid }}</td>
+        <td>{{ team.teamname }}</td>
+        <td>{{ team.location }}</td>
+        <td>{{ team.ownername }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>cricketers</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>age</th>
+        <th>team</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngfor="let cricketer of cricketers">
+        <td>{{ cricketer.cricketerid }}</td>
+        <td>{{ cricketer.cricketername }}</td>
+        <td>{{ cricketer.age }}</td>
+        <td>{{ cricketer.team.teamname }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>matches</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>date</th>
+        <th>venue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngfor="let match of matches">
+        <td>{{ match.matchid }}</td>
+        <td>{{ match.matchdate | date }}</td>
+        <td>{{ match.venue }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

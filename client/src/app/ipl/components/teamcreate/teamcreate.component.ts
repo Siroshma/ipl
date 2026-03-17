@@ -1,5 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { catchError, throwError } from 'rxjs';
+import { IplService } from '../../services/ipl.service';
 import { Team } from '../../types/Team';
 
 @Component({
@@ -11,65 +14,59 @@ export class TeamCreateComponent implements OnInit {
   teamForm!: FormGroup;
   successMessage: string | null = null;
   errorMessage: string | null = null;
+  currentYear: number = new Date().getFullYear();
+  team: Team | null = null;
 
-  currentYear = new Date().getFullYear();
-  // Alphanumeric + space only (no special characters)
-  private readonly teamNamePattern = /^[a-zA-Z0-9 ]+$/;
-
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private iplService: IplService
+  ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  // Initialize form with validation rules
+  private initializeForm(): void {
     this.teamForm = this.formBuilder.group({
-      teamId: [null, [Validators.required, Validators.min(1)]],
-      teamName: ['', [Validators.required, Validators.minLength(2), Validators.pattern(this.teamNamePattern)]],
+      teamName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)]], // No special characters
       location: ['', [Validators.required]],
       ownerName: ['', [Validators.required, Validators.minLength(2)]],
       establishmentYear: [
-        this.currentYear,
+        null,
         [Validators.required, Validators.min(1900), Validators.max(this.currentYear)]
       ]
     });
   }
 
-  // ----- Getters for template cleanliness -----
-  get teamId(): AbstractControl | null { return this.teamForm.get('teamId'); }
-  get teamName(): AbstractControl | null { return this.teamForm.get('teamName'); }
-  get location(): AbstractControl | null { return this.teamForm.get('location'); }
-  get ownerName(): AbstractControl | null { return this.teamForm.get('ownerName'); }
-  get establishmentYear(): AbstractControl | null { return this.teamForm.get('establishmentYear'); }
-
-  // Handle form submission and set messages accordingly
+  // Form submission handler
   onSubmit(): void {
-    this.successMessage = null;
-    this.errorMessage = null;
-
-    if (this.teamForm.invalid) {
-      this.teamForm.markAllAsTouched();
+    if (this.teamForm.valid) {
+      this.addTeam();
+    } else {
       this.errorMessage = 'Please fill out all required fields correctly.';
-      return;
+      this.successMessage = null;
     }
-
-    const payload: Team = this.teamForm.value;
-
-    // ✅ Simulate backend error propagation (e.g., TeamAlreadyExistsException)
-    const backendError = this.simulateBackendConflict(payload.teamName);
-    if (backendError) {
-      this.errorMessage = backendError;
-      return;
-    }
-
-    // TODO: Replace with real call:
-    // this.iplService.addTeam(payload).subscribe({
-    //   next: (team) => { this.successMessage = 'Team created successfully!'; this.resetForm(); },
-    //   error: (err: HttpErrorResponse) => { this.errorMessage = err.error?.message ?? 'Failed to create team'; }
-    // });
-
-    this.successMessage = 'Team has been successfully created!';
-    console.log('Team Created: ', payload);
-    this.resetForm();
   }
 
-  // Reset form data
+  // Method to call backend service and handle the response
+  private addTeam(): void {
+    this.iplService.addTeam(this.teamForm.value).subscribe(
+      (response: Team) => {
+        // Ensure that we are treating the response correctly as a Team
+        this.team = response;  // This should be of type Team
+        this.successMessage = 'Team created successfully!';
+        this.errorMessage = null;
+        console.log('Team Created: ', this.team);
+        this.resetForm();
+      },
+      (error: HttpErrorResponse) => {
+        this.handleError(error);
+      }
+    );
+  }
+
+  // Reset the form after successful submission
   resetForm(): void {
     this.teamForm.reset({
       teamId: null,
@@ -78,16 +75,19 @@ export class TeamCreateComponent implements OnInit {
       ownerName: '',
       establishmentYear: this.currentYear
     });
-    // Don’t clear messages on reset unless you want to:
-    // this.successMessage = null;
-    // this.errorMessage = null;
   }
 
-  // Fake server rule for UI demo
-  private simulateBackendConflict(teamName: string): string | null {
-    if (teamName?.trim().toLowerCase() === 'existing team') {
-      return 'Team already exists. Please choose a different name.';
+  // Error handling method
+  private handleError(error: HttpErrorResponse): void {
+    if (error.error instanceof ErrorEvent) {
+      this.errorMessage = `Client-side error: ${error.error.message}`;
+    } else {
+      this.errorMessage = `Server-side error: ${error.status} ${error.message}`;
+      if (error.status === 400) {
+        this.errorMessage = 'Bad request. Please check your input.';
+      }
     }
-    return null;
+    this.successMessage = null;
+    console.error('An error occurred:', this.errorMessage);
   }
 }

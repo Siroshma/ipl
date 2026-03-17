@@ -10,6 +10,8 @@ import { MatchCreateComponent } from "./components/matchcreate/matchcreate.compo
 import { TicketBookingComponent } from "./components/ticketbooking/ticketbooking.component";
 import { VoteComponent } from "./components/vote/vote.component";
 import { RouterModule } from "@angular/router";
+import { SharedModule } from "../shared/shared.module";
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
 
 @NgModule({
   declarations: [
@@ -17,14 +19,16 @@ import { RouterModule } from "@angular/router";
     CricketerCreateComponent,
     MatchCreateComponent,
     TicketBookingComponent,
-    VoteComponent
+    VoteComponent,
+    DashboardComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
     IplRoutingModule,
-    RouterModule
+    RouterModule,
+    SharedModule
   ],
   exports: [
     
