@@ -12,6 +12,9 @@ import { VoteComponent } from "./components/vote/vote.component";
 import { RouterModule } from "@angular/router";
 import { SharedModule } from "../shared/shared.module";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
+import { CricketerEditComponent } from "./components/cricketeredit/cricketeredit.component";
+import { TeamEditComponent } from "./components/teamedit/teamedit.component";
+import { MatchEditComponent } from "./components/matchedit/matchedit.component";
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import { DashboardComponent } from "./components/dashboard/dashboard.component";
     MatchCreateComponent,
     TicketBookingComponent,
     VoteComponent,
-    DashboardComponent
+    DashboardComponent,
+    CricketerEditComponent,
+    TeamEditComponent,
+    MatchEditComponent
   ],
   imports: [
     CommonModule,
